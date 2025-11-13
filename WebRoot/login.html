@@ -6,325 +6,368 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.bootcdn.net/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>医疗云系统</title>
     <style>
-        /* 蓝色主色调样式 */
+        /* 基础布局和蓝色主题样式 */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        
+
+        /* 主要内容容器 */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 页脚 */
+        .footer {
+            width: 100%;
+            height: 60px;
+            background-color: #0d5fc9;
+            color: white;
+            text-align: center;
+            line-height: 60px;
+            margin-top: auto;
+        }
+
+        /* 头部样式 */
         .header {
+            text-align: center;
             background: linear-gradient(135deg, #1e66d9, #0c57c2);
             color: white;
-            padding: 20px 0;
+            padding: 40px 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
+
         .header h1 {
-            margin: 0;
-            font-size: 2.5em;
+            margin: 0 0 15px 0;
+            font-size: 2.8em;
             font-weight: 600;
         }
-        
+
+        .header p {
+            margin: 0;
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        /* 导航栏样式 */
         .navbar {
             background-color: #0d5fc9 !important;
             border: none;
             border-radius: 0;
             margin-bottom: 0;
+            min-height: 50px;
         }
-        
-        .navbar-default .navbar-brand,
+
         .navbar-default .navbar-nav > li > a {
             color: white !important;
+            padding: 15px 20px;
         }
-        
-        .navbar-default .navbar-nav > li > a:hover,
-        .navbar-default .navbar-nav > li > a:focus {
+
+        .navbar-default .navbar-nav > li > a:hover {
             background-color: #0a4eaa !important;
-            color: white !important;
         }
-        
-        .navbar-default .navbar-nav > .active > a,
-        .navbar-default .navbar-nav > .active > a:hover,
-        .navbar-default .navbar-nav > .active > a:focus {
-            background-color: #0a4eaa !important;
-            color: white !important;
+
+        /* 主要内容区域 */
+        .content-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 0;
         }
-        
-        .feature-card {
+
+        /* 水平容器 */
+        .horizontal-container {
+            width: 100%;
+            max-width: 1400px;
+            padding: 0 20px;
+        }
+
+        /* 正方形卡片行 - 真正的水平排列 */
+        .square-cards-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        /* 正方形卡片 - 增大按钮下方间距 */
+        .square-card {
+            width: 360px;
+            height: 400px; /* 增加高度以容纳更大的按钮下方间距 */
             background: white;
-            border-radius: 8px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 20px;
+            padding: 40px 30px 60px; /* 增大底部内边距到60px */
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #eaeaea;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+
+        .square-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
-        
-        .feature-card h3 {
-            color: #0d5fc9;
-            margin-bottom: 15px;
+
+        /* 图标容器 */
+        .icon-container {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #e6f0ff, #cce0ff);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 35px;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(13, 95, 201, 0.15);
         }
-        
+
         .feature-icon {
-            font-size: 48px;
+            font-size: 60px;
             color: #0d5fc9;
-            margin-bottom: 15px;
         }
-        
+
+        .square-card h3 {
+            color: #0d5fc9;
+            margin-bottom: 20px;
+            font-size: 1.7em;
+            font-weight: 600;
+        }
+
+        .square-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            flex-grow: 1;
+        }
+
+        /* 按钮容器 - 增大按钮下方间距 */
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-top: 20px;
+            padding-bottom: 20px; /* 增加按钮容器下方的内边距 */
+        }
+
+        /* 按钮样式 */
+        .btn {
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: 500;
+            width: 80%;
+            max-width: 200px;
+            margin-bottom: 10px; /* 保留按钮下方间距 */
+        }
+
         .btn-primary {
             background-color: #0d5fc9 !important;
             border-color: #0d5fc9 !important;
         }
-        
+
         .btn-primary:hover {
             background-color: #0a4eaa !important;
             border-color: #0a4eaa !important;
+            transform: translateY(-2px);
         }
-        
-        .welcome-section {
-            background-color: #e3f2fd;
-            padding: 40px 0;
-            margin-bottom: 30px;
+
+        /* 添加装饰元素 */
+        .square-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #0d5fc9, #1e66d9);
         }
-        
-        .welcome-section h2 {
-            color: #0d5fc9;
-            margin-bottom: 20px;
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .square-cards-row {
+                gap: 40px;
+            }
+            
+            .square-card {
+                width: 340px;
+                height: 380px;
+                padding: 40px 30px 50px; /* 响应式调整底部内边距 */
+            }
         }
-        
-        .footer {
-            background-color: #0d5fc9;
-            color: white;
-            padding: 20px 0;
-            margin-top: 50px;
+
+        @media (max-width: 992px) {
+            .square-cards-row {
+                gap: 30px;
+            }
+            
+            .square-card {
+                width: 320px;
+                height: 360px;
+                padding: 35px 25px 45px;
+            }
+            
+            .icon-container {
+                width: 110px;
+                height: 110px;
+                margin-bottom: 30px;
+            }
+            
+            .feature-icon {
+                font-size: 55px;
+            }
+            
+            .square-card p {
+                margin-bottom: 25px;
+            }
+            
+            .button-container {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .square-cards-row {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .square-card {
+                width: 320px;
+                height: 360px;
+                padding: 35px 25px 45px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .header p {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .square-card {
+                width: 300px;
+                height: 340px;
+                padding: 30px 20px 40px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header p {
+                font-size: 1em;
+            }
+            
+            .icon-container {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 25px;
+            }
+            
+            .feature-icon {
+                font-size: 50px;
+            }
+            
+            .square-card h3 {
+                font-size: 1.5em;
+            }
+            
+            .square-card p {
+                margin-bottom: 20px;
+            }
+            
+            .button-container {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 系统头部 -->
-    <div class="header">
-        <div class="container">
-            <h1>医疗云系统</h1>
-            <p>智慧医疗，便捷服务</p>
-        </div>
-    </div>
-
-    <!-- 导航菜单 -->
-    <div class="servicePortfolio">
-        <div class="navbar navbar-default">
+    <div class="main-container">
+        <!-- 系统头部 -->
+        <div class="header">
             <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">医疗云首页</a>
-                </div>
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">首页</a></li>
-                    <li><a href="#" id="nav-registration">预约挂号</a></li>
-                    <li><a href="#" id="nav-history">看病历史</a></li>
-                    <li><a href="#" id="nav-profile">我的信息</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">登录</a></li>
-                    <li><a href="#">注册</a></li>
-                </ul>
+                <h1>医疗云系统</h1>
+                <p>智慧医疗，便捷服务</p>
             </div>
         </div>
-    </div>
 
-    <!-- 欢迎区域 -->
-    <div class="welcome-section">
-        <div class="container text-center">
-            <h2>欢迎使用医疗云系统</h2>
-            <p>我们致力于为您提供便捷、高效的医疗服务体验</p>
-        </div>
-    </div>
-
-    <!-- 主要功能区域 -->
-    <div class="container">
-        <div class="row">
-            <!-- 预约挂号功能卡片 -->
-            <div class="col-md-4">
-                <div class="feature-card text-center" id="registration-card">
-                    <div class="feature-icon">📅</div>
-                    <h3>预约挂号</h3>
-                    <p>在线预约各大医院专家号，无需排队等待，轻松就诊</p>
-                    <button class="btn btn-primary">立即预约</button>
-                </div>
-            </div>
-            
-            <!-- 看病历史功能卡片 -->
-            <div class="col-md-4">
-                <div class="feature-card text-center" id="history-card">
-                    <div class="feature-icon">📋</div>
-                    <h3>看病历史</h3>
-                    <p>查看您的就诊记录、检查报告和用药历史，方便您随时查阅</p>
-                    <button class="btn btn-primary">查看历史</button>
-                </div>
-            </div>
-            
-            <!-- 我的信息功能卡片 -->
-            <div class="col-md-4">
-                <div class="feature-card text-center" id="profile-card">
-                    <div class="feature-icon">👤</div>
-                    <h3>我的信息</h3>
-                    <p>管理您的个人资料、家庭成员信息和医保信息</p>
-                    <button class="btn btn-primary">管理信息</button>
+        <!-- 导航菜单 -->
+        <div class="servicePortfolio">
+            <div class="navbar navbar-default">
+                <div class="container">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><i class="fas fa-sign-in-alt"></i> 登录</a></li>
+                        <li><a href="#"><i class="fas fa-user-plus"></i> 注册</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- 功能模块内容区 -->
-        <div class="row" style="margin-top: 30px;">
-            <!-- 预约挂号模块 -->
-            <div id="registration" style="display: none; width: 100%;">
-
-            <!-- 预约挂号模块内容 -->
-    <h1>预约挂号</h1>
-    
-    <!-- 搜索框 -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="请输入科室或者医生">
-                <span class="input-group-btn">
-                    <button class="btn btn-info btn-search">搜索</button>
-                </span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" style="margin-top: 20px;">
-        <div class="col-md-8">
-            <form>
-                <div class="form-group">
-                    <label for="patientname">姓名</label>
-                    <input type="text" class="form-control" id="patientname" placeholder="请输入姓名">
-                </div>
-                <div class="form-group">
-                    <label for="appointmentData">预约时间</label>
-                    <input type="datetime-local" class="form-control" id="appointmentData">
-                </div>
-                <div class="form-group">
-                    <label for="departFormControlSelect1">科室选择</label>
-                    <select class="form-control" id="departFormControlSelect1">
-                        <option value="">请选择科室</option>
-                        <option>内科</option>
-                        <option>外科</option>
-                        <option>妇产科</option>
-                        <option>儿科</option>
-                        <option>五官科</option>
-                        <option>感染性疾病科</option>
-                        <option>多学科综合门诊</option>
-                        <option>其他</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">确定预约</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-            <!-- 看病历史模块 -->
-            <div id="history" style="display: none;">
-                <h1>看病历史</h1>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>姓名</th>
-                            <th>就诊时间</th>
-                            <th>科室</th>
-                            <th>医生</th>
-                            <th>诊断结果</th>
-                            <th>状态</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>张三</td>
-                            <td>2022-07-31</td>
-                            <td>内科</td>
-                            <td>李医生</td>
-                            <td>感冒</td>
-                            <td>已就诊</td>
-                        </tr>
-                        <tr>
-                            <td>张三</td>
-                            <td>2021-08-21</td>
-                            <td>外科</td>
-                            <td>王医生</td>
-                            <td>轻微擦伤</td>
-                            <td>已就诊</td>
-                        </tr>
-                        <tr>
-                            <td>张三</td>
-                            <td>2021-05-15</td>
-                            <td>口腔科</td>
-                            <td>刘医生</td>
-                            <td>洗牙</td>
-                            <td>已就诊</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 我的信息模块 -->
-            <div id="profile" style="display: none;">
-                <h1>我的信息</h1>
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">个人基本信息</div>
-                            <div class="panel-body">
-                                <form class="form-horizontal">
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">姓名</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" value="张三" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">身份证号</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" value="1101**********1234" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">手机号</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" value="138****5678">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">性别</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" value="男" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">出生日期</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" value="1990-01-01" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">医保卡号</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" value="YBK********1234">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-3 col-sm-9">
-                                            <button type="submit" class="btn btn-primary">保存修改</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+        <!-- 主要功能区域 - 水平排列 -->
+        <div class="content-area">
+            <div class="horizontal-container">
+                <div class="square-cards-row">
+                    <!-- 预约挂号功能卡片 -->
+                    <div class="square-card">
+                        <div class="icon-container">
+                            <div class="feature-icon"><i class="far fa-calendar-alt"></i></div>
+                        </div>
+                        <h3>预约挂号</h3>
+                        <div class="button-container">
+                            <button class="btn btn-primary">立即预约</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 看病历史功能卡片 -->
+                    <div class="square-card">
+                        <div class="icon-container">
+                            <div class="feature-icon"><i class="fas fa-file-medical"></i></div>
+                        </div>
+                        <h3>看病历史</h3>
+                        <div class="button-container">
+                            <button class="btn btn-primary">查看历史</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 我的信息功能卡片 -->
+                    <div class="square-card">
+                        <div class="icon-container">
+                            <div class="feature-icon"><i class="fas fa-user-md"></i></div>
+                        </div>
+                        <h3>我的信息</h3>
+                        <div class="button-container">
+                            <button class="btn btn-primary">管理信息</button>
                         </div>
                     </div>
                 </div>
@@ -333,10 +376,10 @@
     </div>
 
     <div class="footer">
-        此处为页脚
+        版权所有 © 2025 医疗云系统
     </div>
 
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="../js/main.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </body>
 </html>
