@@ -5,11 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>预约挂号 - 医疗云系统</title>
 
-        <!-- Bootstrap CSS -->
         <link
             href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.0/css/bootstrap.min.css"
             rel="stylesheet"
         />
+
         <style>
             body {
                 font-family: "Microsoft YaHei", Arial, sans-serif;
@@ -25,13 +25,11 @@
                 padding: 20px 0;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             }
-
             .header h1 {
                 margin: 0;
                 font-size: 2.5em;
                 font-weight: 600;
             }
-            /* 覆盖 Bootstrap 导航栏颜色 */
             .navbar-default {
                 background-color: #0d5fc9;
                 border: none;
@@ -46,7 +44,6 @@
                 background-color: #0a4eaa !important;
                 color: white !important;
             }
-
             .main-content {
                 flex: 1;
                 display: flex;
@@ -128,8 +125,55 @@
                 box-sizing: border-box;
                 margin-top: auto;
             }
+
+            /* 自定义弹窗 */
+            #confirmModal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+                justify-content: center;
+                align-items: center;
+            }
+            #confirmModalContent {
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 320px;
+                text-align: left;
+                position: relative;
+            }
+            #confirmModalContent h4 {
+                margin-top: 0;
+            }
+            #confirmModalContent button {
+                padding: 6px 12px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            #okConfirm {
+                background-color: #0d5fc9;
+                color: white;
+            }
+            #okConfirm:hover {
+                background-color: #0a4eaa;
+            }
+            #cancelConfirm {
+                background-color: #ccc;
+                color: #333;
+                margin-right: 10px;
+            }
+            #cancelConfirm:hover {
+                background-color: #999;
+            }
         </style>
     </head>
+
     <body>
         <div class="header">
             <div class="container">
@@ -138,7 +182,6 @@
             </div>
         </div>
 
-        <!-- 横向 Bootstrap 导航栏 -->
         <nav class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
@@ -183,11 +226,19 @@
             </div>
         </div>
 
-        <div class="footer">医疗云系统 &copy; 2023 版权所有</div>
+        <!-- 自定义弹窗 -->
+        <div id="confirmModal">
+            <div id="confirmModalContent">
+                <h4>确认预约信息</h4>
+                <p id="confirmText" style="white-space: pre-line"></p>
+                <div style="margin-top: 20px; text-align: right">
+                    <button id="cancelConfirm">取消</button>
+                    <button id="okConfirm">确认</button>
+                </div>
+            </div>
+        </div>
 
-        <!-- Bootstrap JS (可选，用于响应式菜单) -->
-        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <div class="footer">医疗云系统 &copy; 2023 版权所有</div>
 
         <script>
             const doctorMap = {
@@ -210,6 +261,7 @@
             let selectedDept = null,
                 selectedDoctor = null,
                 selectedTime = null;
+
             const deptPanel = document.getElementById("deptPanel");
             const doctorPanel = document.getElementById("doctorPanel");
             const timePanel = document.getElementById("timePanel");
@@ -217,8 +269,14 @@
             const remainingInfo = document.getElementById("remainingInfo");
             const remainingCount = document.getElementById("remainingCount");
 
+            const confirmModal = document.getElementById("confirmModal");
+            const confirmText = document.getElementById("confirmText");
+            const okConfirm = document.getElementById("okConfirm");
+            const cancelConfirm = document.getElementById("cancelConfirm");
+
             const today = new Date().toISOString().split("T")[0];
             dateInput.min = today;
+            dateInput.value = today;
 
             function makeKey(dept, doctor, date, time) {
                 return dept + "__" + doctor + "__" + date + "__" + time;
@@ -262,15 +320,34 @@
 
             function renderTime(times) {
                 timePanel.innerHTML = "<h3>时间</h3>";
+                const selectedDate = dateInput.value;
+                const now = new Date();
                 times.forEach((t) => {
+                    const [start, end] = t.split("-");
+                    const [startH, startM] = start.split(":").map(Number);
+                    const [endH, endM] = end.split(":").map(Number);
                     const div = document.createElement("div");
                     div.className = "list-item";
+
+                    let disabled = false;
+                    if (selectedDate === today) {
+                        const endTime = new Date();
+                        endTime.setHours(endH, endM, 0, 0);
+                        if (endTime <= now) disabled = true;
+                    }
+
                     div.innerText = t;
-                    div.onclick = () => {
-                        selectedTime = t;
-                        highlightSelection(timePanel, t);
-                        updateAvailability();
-                    };
+                    if (disabled) {
+                        div.style.backgroundColor = "#eee";
+                        div.style.color = "#999";
+                        div.style.cursor = "not-allowed";
+                    } else {
+                        div.onclick = () => {
+                            selectedTime = t;
+                            highlightSelection(timePanel, t);
+                            updateAvailability();
+                        };
+                    }
                     timePanel.appendChild(div);
                 });
             }
@@ -311,7 +388,11 @@
                 remainingInfo.style.display = "block";
             }
 
-            dateInput.addEventListener("change", updateAvailability);
+            dateInput.addEventListener("change", () => {
+                selectedTime = null;
+                renderTime(timeSlots);
+                clearRemaining();
+            });
 
             document.getElementById("btnSubmit").onclick = () => {
                 const name = document.getElementById("patientName").value;
@@ -325,6 +406,7 @@
                     alert("请填写完整信息并选择科室、医生、时间和日期");
                     return;
                 }
+
                 const selectedDate = new Date(dateInput.value);
                 const now = new Date();
                 now.setHours(0, 0, 0, 0);
@@ -343,11 +425,27 @@
                     alert("该时间已满，请选择其他时间或医生");
                     return;
                 }
-                availabilityMap[key]--;
-                alert(
-                    `预约成功！\n患者：${name}\n科室：${selectedDept}\n医生：${selectedDoctor}\n日期：${dateInput.value}\n时间：${selectedTime}`,
+
+                // 显示自定义弹窗
+                confirmText.innerText = `患者：${name}\n科室：${selectedDept}\n医生：${selectedDoctor}\n日期：${dateInput.value}\n时间：${selectedTime}`;
+                confirmModal.style.display = "flex";
+            };
+
+            okConfirm.onclick = () => {
+                const key = makeKey(
+                    selectedDept,
+                    selectedDoctor,
+                    dateInput.value,
+                    selectedTime,
                 );
+                availabilityMap[key]--;
+                alert("预约成功！");
+                confirmModal.style.display = "none";
                 window.location.href = "login.html";
+            };
+
+            cancelConfirm.onclick = () => {
+                confirmModal.style.display = "none";
             };
 
             renderDept();
